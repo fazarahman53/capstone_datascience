@@ -10,22 +10,22 @@ def load_telco():
     
     # Adjust dtypes
     catcol = telco.select_dtypes('object').columns
-    telco[catcol] = telco[catcol].apply(lambda x: x.astype('______'))
+    telco[catcol] = telco[catcol].apply(lambda x: x.astype('category'))
     
     # Tenure Months to grouping categories
     def grouping_tenure(telco) :
-        if telco["_______"] <= 12 :
+        if telco["tenure_months"] <= 12 :
             return "< 1 Year"
-        elif (telco["_______"] > 12) & (telco["_______"] __ ____ ):
+        elif (telco["tenure_months"] > 12) & (telco["tenure_months"] <= 24 ):
             return "1-2 Year"
-        elif (telco["_______"] __ ____) & (telco["_______"] <= 48) :
+        elif (telco["tenure_months"] > 24) & (telco["tenure_months"] <= 48) :
             return "2-4 Year"
-        elif (telco["_______"] __ ____) & (telco["_______"] __ ____) :
+        elif (telco["tenure_months"] > 48) & (telco["tenure_months"] <= 60) :
             return "4-5 Year"
         else:
             return "> 5 Year"
-        
-    telco["tenure_group"] = telco.apply(lambda telco: _______(telco), axis = 1)
+
+    telco["tenure_group"] = telco.apply(lambda telco: grouping_tenure(telco), axis = 1) 
     
     # Adjust category order
     tenure_group = ["< 1 Year", "1-2 Year", "2-4 Year", "4-5 Year", "> 5 Year"]
@@ -33,24 +33,25 @@ def load_telco():
     
     return(telco)
 
-def table_churn(data):
+def table_churn(x):
     table = pd.crosstab(
-    index = data['_______'],
+    x['churn_label'],
     columns = 'percent',
-    normalize = _______)*100
+    normalize = 'columns')*100
     return(table)
 
-def plot_phone(data):
+def plot_analisa(data):
     
     # ---- Phone Service Customer
-
-    ax = _______.plot(kind = 'barh', color=['#53a4b1','#c34454'], figsize = (8,6))
+    table_set = pd.crosstab(data['contract'],data['churn_label'],normalize = True)*100
+    ax = data = table_set.plot(kind = 'bar', color=['#53a4b1','#c34454'], figsize=(8, 6))
 
     # Plot Configuration
-    ax.xaxis.set_major_formatter(mtick.PercentFormatter())
+    ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+    plt.axes().get_xaxis().set_label_text('')
+    plt.xticks(rotation = 360)
     plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
-    plt.axes().get_yaxis().set_label_text('')
-    plt.title('Phone Service Customer')
+    plt.title('Churn Rate by Contract')
     
     # Save png file to IO buffer
     figfile = BytesIO()
@@ -61,68 +62,68 @@ def plot_phone(data):
 
     return(result)
 
-def plot_internet(data):
+# def plot_internet(data):
 
-    # ---- Internet Service Customer
+#     # ---- Internet Service Customer
 
-    ax = _______.plot(kind = 'barh', color=['#53a4b1','#c34454'], figsize = (8,6))
+#     ax = _______.plot(kind = 'barh', color=['#53a4b1','#c34454'], figsize = (8,6))
 
-    # Plot Configuration
-    ax.xaxis.set_major_formatter(mtick.PercentFormatter())
-    plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
-    plt.axes().get_yaxis().set_label_text('')
-    plt.title('Internet Service Customer')
+#     # Plot Configuration
+#     ax.xaxis.set_major_formatter(mtick.PercentFormatter())
+#     plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
+#     plt.axes().get_yaxis().set_label_text('')
+#     plt.title('Internet Service Customer')
 
-    # Save png file to IO buffer
-    figfile = BytesIO()
-    plt.savefig(figfile, format='png')
-    figfile.seek(0)
-    figdata_png = base64.b64encode(figfile.getvalue())
-    result = str(figdata_png)[2:-1]
+#     # Save png file to IO buffer
+#     figfile = BytesIO()
+#     plt.savefig(figfile, format='png')
+#     figfile.seek(0)
+#     figdata_png = base64.b64encode(figfile.getvalue())
+#     result = str(figdata_png)[2:-1]
 
-    return(result)
+#     return(result)
 
-def plot_tenure_churn(data):
+# def plot_tenure_churn(data):
     
-    # ---- Churn Rate by Tenure Group
+#     # ---- Churn Rate by Tenure Group
 
-    ax = ______.plot(kind = 'bar', color=['#53a4b1','#c34454'], figsize=(8, 6))
+#     ax = ______.plot(kind = 'bar', color=['#53a4b1','#c34454'], figsize=(8, 6))
 
-    # Plot Configuration
-    ax.yaxis.set_major_formatter(mtick.PercentFormatter())
-    plt.axes().get_xaxis().set_label_text('')
-    plt.xticks(rotation = 360)
-    plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
-    plt.title('Churn Rate by Tenure Group')
+#     # Plot Configuration
+#     ax.yaxis.set_major_formatter(mtick.PercentFormatter())
+#     plt.axes().get_xaxis().set_label_text('')
+#     plt.xticks(rotation = 360)
+#     plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
+#     plt.title('Churn Rate by Tenure Group')
 
-    # Save png file to IO buffer
-    figfile = BytesIO()
-    plt.savefig(figfile, format='png')
-    figfile.seek(0)
-    figdata_png = base64.b64encode(figfile.getvalue())
-    result = str(figdata_png)[2:-1]
+#     # Save png file to IO buffer
+#     figfile = BytesIO()
+#     plt.savefig(figfile, format='png')
+#     figfile.seek(0)
+#     figdata_png = base64.b64encode(figfile.getvalue())
+#     result = str(figdata_png)[2:-1]
 
-    return(result)
+#     return(result)
 
-def plot_tenure_cltv(data):
+# def plot_tenure_cltv(data):
 
-    # ---- Average Lifetime Value by Tenure
+#     # ---- Average Lifetime Value by Tenure
 
-    ax = ______.plot(color=['#333333','#b3b3b3'], figsize=(8, 6),style = '.--')
+#     ax = ______.plot(color=['#333333','#b3b3b3'], figsize=(8, 6),style = '.--')
 
-    # Plot Configuration
-    plt.axes().get_xaxis().set_label_text('Tenure (in Months)')
-    plt.title('Average Lifetime Value by Tenure')
-    ax.yaxis.set_major_formatter(mtick.StrMethodFormatter('${x:,.0f}'))
-    plt.xticks(rotation = 360)
-    plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
+#     # Plot Configuration
+#     plt.axes().get_xaxis().set_label_text('Tenure (in Months)')
+#     plt.title('Average Lifetime Value by Tenure')
+#     ax.yaxis.set_major_formatter(mtick.StrMethodFormatter('${x:,.0f}'))
+#     plt.xticks(rotation = 360)
+#     plt.legend(['Retain', 'Churn'],fancybox=True,shadow=True)
 
-    # Save png file to IO buffer
-    figfile = BytesIO()
-    plt.savefig(figfile, format='png')
-    figfile.seek(0)
-    figdata_png = base64.b64encode(figfile.getvalue())
-    result = str(figdata_png)[2:-1]
+#     # Save png file to IO buffer
+#     figfile = BytesIO()
+#     plt.savefig(figfile, format='png')
+#     figfile.seek(0)
+#     figdata_png = base64.b64encode(figfile.getvalue())
+#     result = str(figdata_png)[2:-1]
 
-    return(result)
+#     return(result)
 
