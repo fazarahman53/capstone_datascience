@@ -78,7 +78,7 @@
 					</button>
 					<button class="tablinks" onclick="openTab(event, 'subscription')">Subscription Service
 					</button>
-					<button class="tablinks" onclick="openTab(event, 'Own')">(My Own Territory)
+					<button class="tablinks" onclick="openTab(event, 'Own')">Churn Rate by Contract
 					</button>
 				</div>
 			</div>
@@ -114,7 +114,7 @@
 
 				<div id="Own" class="tabcontent">
 						{% if funded_plot != None %}
-					<img src="data:image/png;base64,{{ plot_analisa_res }}" style="width:60%;">
+					<img src="data:image/png;base64,{{ plot_analisa_res }}" style="width:55%;">
 						{% endif %}  
 				</div>
 
